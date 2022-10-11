@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "canvas": "^2.10.1",
+    "class-transformer": "^0.5.1",
+    "colors": "^1.4.0",
+    "discord-cross-hosting": "^2.3.2",
+    "discord-hybrid-sharding": "^1.7.4",
+    "discord.js": "^13.6.0",
+    "express": "^4.18.1",
+    "moment": "^2.29.4",
+    "mongoose": "^6.6.5",
+    "node-fetch": "2.6",
+    "os-utils": "^0.0.14",
+    "url-exists": "^1.0.3"
+  },
+  "name": "v14-handler",
+  "description": "Discord.js Handler Template [Modified Version of Tomato6966's Handler] Supporting Discord.jsv14!",
+  "version": "2.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node -v",
+    "start": "node index.js"
+  },
+  "author": "JazzZ#9022",
+  "license": "MIT"
+}

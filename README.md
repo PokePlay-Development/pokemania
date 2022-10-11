@@ -1,0 +1,2 @@
+# Mewcord
+ Pokemon Discord Bot
