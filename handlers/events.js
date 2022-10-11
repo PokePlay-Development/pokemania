@@ -9,10 +9,10 @@ module.exports = async (client) => {
             /* */ }
         let amount = 0;
         const load_dir = (dir) => {
-            const event_files = fs.readdirSync(`./events/${dir}`).filter((file) => file.endsWith(".js"));
+            const event_files = fs.readdirSync(`${process.cwd()}/events/${dir}`).filter((file) => file.endsWith(".js"));
             for (const file of event_files) {
                 try {
-                    const event = require(`../events/${dir}/${file}`)
+                    const event = require(`${process.cwd()}/events/${dir}/${file}`)
                     let eventName = file.split(".")[0];
                     allevents.push(eventName);
                     client.on(eventName, event.bind(null, client));
