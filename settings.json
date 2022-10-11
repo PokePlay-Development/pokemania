@@ -5,7 +5,7 @@
         "status": false
     },
     "support": "https://discord.gg/yW96nQZQ9d",
-    "loadSlashsGlobal": false,
+    "loadSlashsGlobal": true,
     "slashCommandsDirs": [
         {
             "Folder": "Developer",

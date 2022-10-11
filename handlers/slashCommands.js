@@ -125,12 +125,14 @@ module.exports = (client) => {
 		//Once the Bot is ready, add all Slas Commands to each guild
 		client.on("ready", () => {
 			if(config.loadSlashsGlobal){
+				client.guilds.cache.forEach(g => { guild.commands.set([]) })
 				client.application.commands.set(allCommands)
 				.then(slashCommandsData => {
 					console.log(`${slashCommandsData.size} slashCommands ${`(With ${slashCommandsData.map(d => d.options).flat().length} Subcommands)`.green} Loaded for all: ${`All possible Guilds`.underline}`.brightGreen); 
 					console.log(`Because u are Using Global Settings, it can take up to 1 hour until the Commands are changed!`.bold.yellow)
 				}).catch((e)=>console.log(e));
 			} else {
+				client.application.commands.set([])
 				client.guilds.cache.map(g => g).forEach((guild) => {
 					try{
 						guild.commands.set(allCommands)
