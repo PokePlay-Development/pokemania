@@ -242,7 +242,8 @@ module.exports = async (client, message) => {
 
 
 
-    // Command Handling Etc.
+    /*
+// Command Handling Etc.
     if (message.channel.partial) await message.channel.fetch();
     if (message.partial) await message.fetch();
     let prefix = settings.messageContentCommands.prefix
@@ -259,6 +260,7 @@ module.exports = async (client, message) => {
             console.log(`[Error]`.red, `MESSAGE EVENT ERROR`.white, `\n${String(e.stack)}`)
         }
     }
+    */
 }
 function pickRandom() {
     let rareChance = getRandomNumberBetween(1, 101)
