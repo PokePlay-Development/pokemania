@@ -7,6 +7,7 @@ const Trade = require("../../models/trade.js")
 const User = require("../../models/user.js")
 module.exports = {
     name: "confirm",
+    trade: true,
     description: "Execute The Trade.",
     run: async (client, interaction, color) => {
         let trade = await Trade.findOne({ id1: interaction.user.id });
@@ -47,6 +48,7 @@ module.exports = {
                             new MessageButton()
                                 .setStyle("SUCCESS")
                                 .setCustomId("confirm_trade")
+                                .setDisabled(true)
                                 .setLabel("Confirm Trade"),
                             new MessageButton()
                                 .setStyle("DANGER")
@@ -154,6 +156,7 @@ module.exports = {
                             new MessageButton()
                                 .setStyle("SUCCESS")
                                 .setCustomId("confirm_trade")
+                                .setDisabled(true)
                                 .setLabel("Confirm Trade"),
                             new MessageButton()
                                 .setStyle("DANGER")

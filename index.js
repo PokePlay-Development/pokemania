@@ -1,10 +1,10 @@
 const Cluster = require('discord-hybrid-sharding');
 const { token } = require("./settings.json")
 const manager = new Cluster.Manager(`${__dirname}/bot.js`, {
-    totalShards: 7, // or 'auto'
+    totalShards: 'auto', // or 'auto'
     /// Check below for more options
-    shardsPerClusters: 3,
-    // totalClusters: 7,
+    shardsPerClusters: 1,
+    totalClusters: 1,
     mode: 'process', // you can also choose "worker"
     token: token,
 });

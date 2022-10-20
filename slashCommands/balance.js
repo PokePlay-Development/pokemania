@@ -6,6 +6,7 @@ const User = require("../models/user.js")
 module.exports = {
     name: `balance`,
     description: `Check Your balance.`,
+    trade: true,
     run: async (client, interaction, color, support, guild) => {
         await interaction.deferReply();
         let user = await User.findOne({ id: interaction.user.id })

@@ -8,6 +8,7 @@ const User = require("../../models/user.js")
 
 module.exports = {
     name: "remove",
+    trade: true,
     description: "Remove A Item From The Trades",
     options: [
         {"StringChoices": { name: "item", description: "What Do You Wish To Remove?", required: true, choices: [
@@ -94,6 +95,7 @@ module.exports = {
                     new MessageButton()
                     .setStyle("SUCCESS")
                     .setCustomId("confirm_trade")
+                    .setDisabled(true)
                     .setLabel("Confirm Trade"),
                     new MessageButton()
                     .setStyle("DANGER")
@@ -160,6 +162,7 @@ module.exports = {
                     new MessageButton()
                     .setStyle("SUCCESS")
                     .setCustomId("confirm_trade")
+                    .setDisabled(true)
                     .setLabel("Confirm Trade"),
                     new MessageButton()
                     .setStyle("DANGER")

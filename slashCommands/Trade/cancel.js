@@ -8,6 +8,7 @@ const User = require("../../models/user.js")
 
 module.exports = {
     name: "cancel",
+    trade: true,
     description: "Cancel Your Trade.",
     run: async (client, interaction, color) => {
         let user = await User.findOne({ id: interaction.user.id })

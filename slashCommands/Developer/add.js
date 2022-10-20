@@ -19,10 +19,6 @@ module.exports = {
     ],
     run: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: true })
-        if(interaction.user.id !== "681152993361788928") return await interaction.editReply({
-            content: `Only ${client.user.username}'s Developers/Owners Can Run This Command.`,
-            ephemeral: true
-        })
         const options = interaction.options;
         let item = options.getString("item")
         let ammount = options.getInteger("ammount")

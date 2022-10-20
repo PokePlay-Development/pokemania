@@ -8,6 +8,7 @@ const fetch = require("node-fetch")
 module.exports = {
     name: "pokemon",
     description: "Get The List Of Your Pokémons / Get Information About Them!",
+    trade: true,
     options: [
         {"StringChoices": { name: "info", description: `Get The Information of Your Pokémon in A Specific Slot.`, required: false, choices: [
             ["slot_1", "slot_1"],

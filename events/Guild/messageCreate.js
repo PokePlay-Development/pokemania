@@ -61,7 +61,7 @@ module.exports = async (client, message) => {
                             let levelr = levelup.find(r => r.name == pokemon.name)
                             if (levelr) {
                                 levelr = levelr.levelup
-                                if (pokemon.level >= levelr) { // evolved.
+                                if (pokemon.level >= levelr && pokemon.name !== levelup.find(r => r.name == pokemon.name).name) { // evolved.
                                     fetch(`https://pokeapi.co/api/v2/pokemon/${levelup.find(r => r.name == pokemon.name).evo}`)
                                         .then(res => res.json())
                                         .then(async data => {
@@ -81,7 +81,7 @@ module.exports = async (client, message) => {
                                                     .setTitle(`Congratulations, **__${client.users.cache.get(user.id).username}!__**`)
                                                     .setColor(color)
                                                     .setThumbnail(url)
-                                                    .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To  Level**${pokemon.level}!**\nIt Have Just Evolved Into A **__${data.name}__!**`)]
+                                                    .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To Level** ${pokemon.level}!**\nIt Have Just Evolved Into A **__${data.name}__!**`)]
                                             })
                                         }).catch(e => { return e })
                                 } else {
@@ -97,7 +97,7 @@ module.exports = async (client, message) => {
                                         embeds: [new MessageEmbed()
                                             .setTitle(`Congratulations, **__${client.users.cache.get(user.id).username}!__**`)
                                             .setColor(color)
-                                            .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To  Level**${pokemon.level}!**`)]
+                                            .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To Level** ${pokemon.level}!**`)]
                                     })
                                 }
                             } else {
@@ -113,7 +113,7 @@ module.exports = async (client, message) => {
                                     embeds: [new MessageEmbed()
                                         .setTitle(`Congratulations, **__${client.users.cache.get(user.id).username}!__**`)
                                         .setColor(color)
-                                        .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To  Level**${pokemon.level}!**`)]
+                                        .setDescription(`Your **__${pokemon.name}__** Just Leveled Up To Level** ${pokemon.level}!**`)]
                                 })
                             }
                         }
@@ -199,40 +199,54 @@ module.exports = async (client, message) => {
                     throw_ball,
                     battle
                 ])]
-                if (spawner.channels.length !== 0) {
-                    let cid = spawner.channels[Math.floor(Math.random() * spawner.channels.length)]
-                    let spawn = await Spawn.findOne({ id: cid })
-                    if(spawn) {
-                        Spawn.findOneAndDelete({ id: cid })
+                if (spawner.channels && spawner.channels.length < 1) {
+                    let spawn = Spawn.findOne({ id: message.channel.id });
+                    if (spawn) {
+                        Spawn.findOneAndDelete({ id: message.channel.id }, async (err, res) => {
+                            if (res) {
+                                await new Spawn({ id: message.channel.id, pokeid: data.id, pokename: data.name }).save()
+                            }
+                        })
+                    } else {
+                        await new Spawn({ id: message.channel.id, pokeid: data.id, pokename: data.name }).save()
                     }
-                    await new Spawn({ id: cid, pokename: data.name, pokeid: data.id }).save()
+                    await message.channel.send({
+                        embeds: [new MessageEmbed()
+                            .setColor(color)
+                            .setTitle(`A Wild Pokémon Has Appeared!`)
+                            .setDescription(`Throw A pokéball To Catch The pokémon!`)
+                            .setImage(`attachment://pokemon.png`)],
+                        components: row,
+                        files: [attachment]
+                    }).catch(e => {
+                        console.log(`Unable To Spawn Pokemon Here.`)
+                    })
+                } else {
+                    let cid = spawner.channels[Math.floor(Math.random() * spawner.channels.length)]
                     let channel = message.guild.channels.cache.get(cid)
                     if (channel) {
-                        let _msg = await channel.send({
-                            files: [attachment],
+                        let spawn = Spawn.findOne({ id: channel.id });
+                        if (spawn) {
+                            Spawn.findOneAndDelete({ id: channel.id }, async (err, res) => {
+                                if (res) {
+                                    await new Spawn({ id: channel.id, pokeid: data.id, pokename: data.name }).save()
+                                }
+                            })
+                        } else {
+                            await new Spawn({ id: channel.id, pokeid: data.id, pokename: data.name }).save()
+                        }
+                        await message.channel.send({
                             embeds: [new MessageEmbed()
-                                .setTitle(`A Wild Pokémon Has Appeared!`)
                                 .setColor(color)
-                                .setDescription(`Throw A **Pokéball** To Catch The Pokémon!`)
+                                .setTitle(`A Wild Pokémon Has Appeared!`)
+                                .setDescription(`Throw A pokéball To Catch The pokémon!`)
                                 .setImage(`attachment://pokemon.png`)],
-                            components: row
+                            components: row,
+                            files: [attachment]
+                        }).catch(e => {
+                            console.log(`Unable To Spawn Pokemon Here.`)
                         })
                     }
-                } else if (spawner.channels.length == 0) {
-                    await new Spawn({ id: message.channel.id, pokename: data.name, pokeid: data.id }).save()
-                    let spawn = await Spawn.findOne({ id: message.channel.id })
-                    if(spawn) {
-                        Spawn.findOneAndDelete({ id: message.channel.id })
-                    }
-                    let _msg = await message.channel.send({
-                        files: [attachment],
-                        embeds: [new MessageEmbed()
-                            .setTitle(`A Wild Pokémon Has Appeared!`)
-                            .setColor(color)
-                            .setDescription(`Throw A **Pokéball** To Catch The Pokémon!`)
-                            .setImage(`attachment://pokemon.png`)],
-                        components: row
-                    })
                 }
             }).catch(e => { return })
     } else {

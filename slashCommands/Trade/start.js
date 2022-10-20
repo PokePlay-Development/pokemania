@@ -9,6 +9,7 @@ const User = require("../../models/user.js")
 module.exports = {
     name: "start",
     description: "Start Trades With A User!",
+    trade: true,
     options: [
         {"User": { name: "member", description: "Mention The Member You Wish To Trade!", required: true }}
     ],
@@ -35,6 +36,7 @@ module.exports = {
                 new MessageButton()
                 .setStyle("SUCCESS")
                 .setCustomId("accept")
+                //.setDisabled(true)
                 .setLabel("accept"),
                 new MessageButton()
                 .setStyle("DANGER")
@@ -79,6 +81,7 @@ module.exports = {
                         new MessageButton()
                         .setStyle("SUCCESS")
                         .setCustomId("confirm_trade")
+                        .setDisabled(true)
                         .setLabel("Confirm Trade"),
                         new MessageButton()
                         .setStyle("DANGER")
