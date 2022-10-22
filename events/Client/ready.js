@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../../models/user");
 module.exports = async (client) => {
     console.log(`[LOGGED INTO CLIENT]`.green, `Logged Into `.white + `${client.user.tag}`.green)
     require("mongoose").connect("mongodb+srv://JazzZ:MypsBxFasrtQ0ZKs@mewcord.9giqjvb.mongodb.net/?retryWrites=true&w=majority").then(() => {
@@ -13,7 +13,7 @@ module.exports = async (client) => {
         let seconds = date.getSeconds();
         if(hour == 24 && minutes == 0 && seconds == 10) {
             console.log(`[QUESTS]`.green, `Resetting Quests...`.bold.cyan)
-            let users = await User.find()
+            let users = await User.find({})
             users.forEach(async user => {
                 user.q1 = false;
                 user.q2 = false;
