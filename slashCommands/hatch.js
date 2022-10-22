@@ -54,6 +54,12 @@ module.exports = {
                             poke.level = getRandomNumberBetween(1, 20)
                             user.pokemons1.push(poke)
                             user.nest = user.nest - 1;
+                            if(user.q6 !== true) {
+                                user.q6 = true
+                                user.credits += 4000
+                                await user.save()
+                                await interaction.channel.send({ content: `**${click.user.username}** Has Successfully Completed Their 6th Quest, They Recieved 4,000 Credits!` })
+                            }
                             await user.save()
                         } else {
                             poke.url = url;
@@ -61,6 +67,12 @@ module.exports = {
                             poke.level = getRandomNumberBetween(1, 20)
                             user.pokemons1.push(poke)
                             user.nest = user.nest - 1;
+                            if(user.q6 !== true) {
+                                user.q6 = true
+                                user.credits += 4000
+                                await user.save()
+                                await interaction.channel.send({ content: `**${click.user.username}** Has Successfully Completed Their 6th Quest, They Recieved 4,000 Credits!` })
+                            }
                             await user.save()
                         }
                         await interaction.editReply({ content: `**You Successfully** Hatched An Egg of **__${poke.name}__ Level: ${poke.level}.**` })
@@ -74,6 +86,12 @@ module.exports = {
                             poke.level = getRandomNumberBetween(1, 20)
                             user.pokemons1.push(poke)
                             user.nest = user.nest - 1;
+                            if(user.q6 !== true) {
+                                user.q6 = true
+                                user.credits += 4000
+                                await user.save()
+                                await interaction.channel.send({ content: `**${click.user.username}** Has Successfully Completed Their 6th Quest, They Recieved 4,000 Credits!` })
+                            }
                             await user.save()
                         } else {
                             poke.url = url;
@@ -81,6 +99,12 @@ module.exports = {
                             poke.level = getRandomNumberBetween(1, 20)
                             user.pokemons1.push(poke)
                             user.nest = user.nest - 1;
+                            if(user.q6 !== true) {
+                                user.q6 = true
+                                user.credits += 4000
+                                await user.save()
+                                await interaction.channel.send({ content: `**${click.user.username}** Has Successfully Completed Their 6th Quest, They Recieved 4,000 Credits!` })
+                            }
                             await user.save()
                         }
                         await interaction.editReply({ content: `**You Successfully** Hatched An Egg of **__${poke.name}__ Level: ${poke.level}.**` })

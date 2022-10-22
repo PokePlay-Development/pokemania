@@ -27,7 +27,7 @@ module.exports = {
     run: async (client, interaction, color, support, guild) => {
         let user = await User.findOne({ id: interaction.user.id })
         if(!user) return interaction.reply({ content: `You Have Not Started Your Journey Yet, Run \`/start\` Command To Start Your Journey!` })
-        if(user.credits < 5000) return interaction.reply(`You Need 5,000 Credits To Breed A Pokémon!`)
+        if(user.credits < 500) return interaction.reply(`You Need 500 Credits To Breed A Pokémon!`)
         if(user.eggs.length >= 10) return interaction.reply(`You Can Hold Only Upto **10** Eggs At A Time!`)
         const { options } = interaction;
         const male_id = options.getInteger("male_id")
@@ -265,8 +265,15 @@ module.exports = {
                 if(held_item && held_item == "ultra_destiny_knot") user.ultra_destiny_knot = user.ultra_destiny_knot - 1;
                 poke = instanceToPlain(poke)
                 user.eggs.push(poke)
-                user.credits = user.credits - 5000
+                user.credits = user.credits - 500
                 await user.save()
+                if(user.q3 == false) {
+                    user = await User.findOne({ id: interaction.user.id })
+                    user.q3 = true
+                    user.credits += 3000;
+                    await user.save()
+                    await interaction.channel.send(`**${interaction.user.username}**, you have successfully Breeded an egg, Completing the quest. You have been rewarded with 3000 credits.`)
+                }
                 return interaction.editReply({ content: `You Have **Successfully** Recieved The Egg!`})
             })
         })

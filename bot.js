@@ -26,6 +26,8 @@ if(settings.messageContentCommands.status == true) {
         ]
     })
 }
+
+client.battles = new Array();
 client.cooldowns = new Collection();
 client.slashCommands = new Collection();
 client.cluster = new Cluster.Client(client);

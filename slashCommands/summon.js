@@ -39,6 +39,11 @@ module.exports = {
                 let check = await check_ban(data.name);
                 if(check == true) return interaction.reply({ content: `Sorry! That Pokémon Cannot Be Summoned!`})            
                 user.summons = user.summons - 1;
+                if(user.q5 !== true) {
+                    user.q5 = true;
+                    user.credits += 4000;
+                    await interaction.channel.send(`You Have Completed Your 5th Quest To Summon A Pokémon! You Have Been Rewarded With \`4000\` Credits!`)
+                }
                 await user.save()
                 await interaction.deferReply({ ephemeral: true });
                 const canvas = Canvas.createCanvas(1920, 1080);

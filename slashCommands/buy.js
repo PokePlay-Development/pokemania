@@ -103,6 +103,12 @@ module.exports = {
                     user.masterball += amt;
                     await user.save()
                     await interaction.editReply({ content: `Successfully Purchased ${amt}x **MasterBall(s)** For **${total}** Credits.`})
+                    if(user.q2 == false) {
+                        user.q2 = true;
+                        user.credits += 2000;
+                        await user.save()
+                        await interaction.followUp({ content: `You Have Completed The Second Quest **To Purchase A Master Ball** And Have Been Rewarded With 2000 Credits.`})
+                    }
                 }
             })
         }

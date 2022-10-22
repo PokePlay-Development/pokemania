@@ -21,14 +21,13 @@ const Schema = new mongoose.Schema({
     ultraball: { type: Number, default: 0 },
     masterball: { type: Number, default: 0 },
     trainer: { type: String, default: "ash"},
-    quest: {
-        q1: { type: Boolean, default: false },
-        q2: { type: Boolean, default: false },
-        q3: { type: Boolean, default: false },
-        q4: { type: Boolean, default: false },
-        q5: { type: Boolean, default: false },
-        q6: { type: Boolean, default: false }
-    },
+    q1: { type: Boolean, default: false },
+    q2: { type: Boolean, default: false },
+    q3: { type: Boolean, default: false },
+    q4: { type: Boolean, default: false },
+    q5: { type: Boolean, default: false },
+    q6: { type: Boolean, default: false },
+    qcaught: { type: Array, default: [] },
     held_items: { type: Array, default: [] },
     nest: { type: Number, default: 1 }
 })

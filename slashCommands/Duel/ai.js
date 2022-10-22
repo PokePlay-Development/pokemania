@@ -11,6 +11,7 @@ const User = require("../../models/user.js");
 const Pokemon = require("../../classes/pokemon2.js");
 const { instanceToPlain } = require("class-transformer");
 const common = fs.readFileSync(`${process.cwd()}/db/common.txt`).toString().trim().split("\n").map(r => r.trim());
+const mix = fs.readFileSync(`${process.cwd()}/db/mix.txt`).toString().trim().split("\n").map(r => r.trim());
 const alolan = fs.readFileSync(`${process.cwd()}/db/alola.txt`).toString().trim().split(`\n`).map(r => r.trim());
 const mythic = fs.readFileSync(`${process.cwd()}/db/mythics.txt`).toString().trim().split(`\n`).map(r => r.trim());
 const legend = fs.readFileSync(`${process.cwd()}/db/legends.txt`).toString().trim().split(`\n`).map(r => r.trim());
@@ -33,11 +34,12 @@ module.exports = {
         }
     ],
     run: async (client, interaction, color) => {
+        const { options } = interaction;
         let user = await User.findOne({ id: interaction.user.id })
         if (!user) {
             return interaction.reply({ content: `You Have Not Started Yet, Type \`/start\` To Pick A Starter.` })
         }
-        let difficulty = interaction.options.getString("difficulty")
+        let difficulty = options.getString("difficulty")
         let name = ""
         let level = 1;
         let hp;
@@ -50,47 +52,35 @@ module.exports = {
             let random_name = common[Math.floor(Math.random() * common.length)];
             random_name = random_name.toLowerCase().replace(/ /g, "-")
             name = random_name;
-            level = getRandomNumberBetween(1, 20)
-            hp = getRandomNumberBetween(1, 11)
-            def = getRandomNumberBetween(1, 11)
-            spdef = getRandomNumberBetween(1, 11)
-            atk = getRandomNumberBetween(1, 11)
-            spatk = getRandomNumberBetween(1, 11)
-            spdef = getRandomNumberBetween(1, 11)
-            speed = getRandomNumberBetween(1, 11)
-        }
-        if (difficulty == "medium") {
+            level = getRandomNumberBetween(10, 20)
+            hp = getRandomNumberBetween(5, 15)
+            def = getRandomNumberBetween(5, 15)
+            spdef = getRandomNumberBetween(5, 15)
+            atk = getRandomNumberBetween(5, 15)
+            spatk = getRandomNumberBetween(5, 15)
+            speed = getRandomNumberBetween(5, 15)
+        } else if (difficulty == "medium") {
             let random_name = legend[Math.floor(Math.random() * legend.length)];
             random_name = random_name.toLowerCase().replace(/ /g, "-")
             name = random_name;
-            level = getRandomNumberBetween(20, 50)
-            hp = getRandomNumberBetween(11, 21)
-            def = getRandomNumberBetween(11, 21)
-            spdef = getRandomNumberBetween(11, 21)
-            atk = getRandomNumberBetween(11, 21)
-            spatk = getRandomNumberBetween(11, 21)
-            spdef = getRandomNumberBetween(11, 21)
-            speed = getRandomNumberBetween(11, 21)
-        }
-        if (difficulty = "hard") {
-            let chance = getRandomNumberBetween(1, 100)
-            if (chance > 50) {
-                let random_name = legend[Math.floor(Math.random() * legend.length)];
-                random_name = random_name.toLowerCase().replace(/ /g, "-")
-                name = random_name;
-            } else {
-                let random_name = mythic[Math.floor(Math.random() * mythic.length)];
-                random_name = random_name.toLowerCase().replace(/ /g, "-")
-                name = random_name;
-            }
-            level = getRandomNumberBetween(50, 100)
-            hp = getRandomNumberBetween(21, 31)
-            def = getRandomNumberBetween(21, 31)
-            spdef = getRandomNumberBetween(21, 31)
-            atk = getRandomNumberBetween(21, 31)
-            spatk = getRandomNumberBetween(21, 31)
-            spdef = getRandomNumberBetween(21, 31)
-            speed = getRandomNumberBetween(21, 31)
+            level = getRandomNumberBetween(20, 30)
+            hp = getRandomNumberBetween(15, 25)
+            def = getRandomNumberBetween(15, 25)
+            spdef = getRandomNumberBetween(15, 25)
+            atk = getRandomNumberBetween(15, 25)
+            spatk = getRandomNumberBetween(15, 25)
+            speed = getRandomNumberBetween(15, 25)
+        } else if (difficulty = "hard") {
+            let random_name = mix[Math.floor(Math.random() * mix.length)];
+            random_name = random_name.toLowerCase().replace(/ /g, "-");
+            name = random_name;
+            level = getRandomNumberBetween(30, 51)
+            hp = getRandomNumberBetween(25, 31)
+            def = getRandomNumberBetween(25, 31)
+            spdef = getRandomNumberBetween(25, 31)
+            atk = getRandomNumberBetween(25, 31)
+            spatk = getRandomNumberBetween(25, 31)
+            speed = getRandomNumberBetween(25, 31)
         }
         let selected = user.selected[0]
         if (!selected) return interaction.reply(`You Have Not Selected Any Pokemon Yet.`)
@@ -106,10 +96,16 @@ module.exports = {
         user = await User.findOne({ id: interaction.user.id })
         pokemon = user.pokemons[index] // the player's pokemon
         //console.log(name)
+        if (!pokemon) return interaction.reply(`You Have Not Selected Any Pokemon Yet.`)
         await interaction.reply({ content: `Finding A pokemon For You To Battle...`, ephemeral: true })
-        fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).catch(e => { return interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!`) })
-            .then(res => res.json()).catch(e => { return interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!`) })
+        fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).catch(e => { interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!`); return console.log(String(e.stack)) })
+            .then(res => res.json()).catch(e => { interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!\n${e}`); return console.log(String(e.stack)) })
             .then(async data => {
+                if (client.battles.find(r => r.id == interaction.user.id)) {
+                    return interaction.editReply(`You Are Already In A Battle!`)
+                } else {
+                    client.battles.push({ id: interaction.user.id, id2: client.user.id, type: "ai" })
+                }
                 let _pokemon = new Pokemon({ name: data.name, level: level, hp: hp, def: def, atk: atk, spdef: spdef, spatk: spatk, speed: speed })
                 _pokemon = instanceToPlain(_pokemon) // AI's Op Pokemon.
                 //console.log(_pokemon)
@@ -201,6 +197,7 @@ module.exports = {
                             let _msg = await interaction.user.send({
                                 embeds: [new MessageEmbed()
                                     .setTitle(`Choose Your Moves`)
+                                    .addFields({ name: `Having Trouble?`, value: `Consider Joining Our Support [\`Server\`](https://discord.gg/D8Sp38rSfh)!` })
                                     .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
                                     .setDescription(`Click on The Below Buttons To Choose Your Moves.`)
                                     .setImage(`attachment://battle.png`)
@@ -212,6 +209,26 @@ module.exports = {
                             const collector = _msg.createMessageComponentCollector({
                                 max: 1,
                                 time: 30000
+                            })
+                            collector.on("end", async collected => {
+                                if(collected.size == 0) {
+                                    await interaction.channel.send({
+                                        embeds: [new MessageEmbed()
+                                        .setTitle(`⚔️ **__Battle Results Are Here!__** ⚔️`)
+                                        .setDescription(`**${interaction.user.tag}** Has Been **__Defeated__** By **${client.user.tag}** Since They Did Not Respond!`)
+                                        .addFields(
+                                            { name: `${interaction.user.username}'s side`, value: `\`${hp1 > 1 ? hp1 : 0}/${_hpTotal}\` | **__${pokemon.name}__** - **__Level__** \`${pokemon.level}\` of Total IV: ${pokemon.totalIV}%` },
+                                            { name: `${client.user.username}'s side`, value: `\`${hp2 > 1 ? hp2 : 0}/${hpTotal}\` | **__${_pokemon.name}__** - **__Level__** \`${_pokemon.level}\` of Total IV: ${_pokemon.totalIV}%` }
+                                        )
+                                        .setImage(`attachment://battle.png`)
+                                        .setColor(color)],
+                                        files: [attachment]
+                                    })
+                                    let client_battle = client.battles.find(battle => battle.id == interaction.user.id && battle.type == "ai")
+                                    if(client_battle) {
+                                        client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                    }
+                                }
                             })
                             collector.on("collect", async (click) => {
                                 if (click.customId == "flee") {
@@ -237,6 +254,10 @@ module.exports = {
                                             .setImage(`attachment://battle.png`)
                                             .setDescription(`**${interaction.user.username}** Choosed To Flee From The Battle!\nThe Winner is **${client.user.tag}!**`)]
                                     })
+                                    let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                    if (client_battle) {
+                                        client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                    }
                                 } else if (click.customId == "pass") {
                                     fetch(`https://pokeapi.co/api/v2/move/${opponent_moves[Math.floor(Math.random() * opponent_moves.length)]}`)
                                         .then(res => res.json())
@@ -256,18 +277,32 @@ module.exports = {
                                             if (mv.damage_class == "special") attack = spatkTotal;
                                             let defence = defTotal // player's defence
                                             if (mv.damage_class == "special") defence = _spdefTotal
-                                            let stab = 1
-                                            let pokemon_type = _data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toLowerCase()))
-                                            if (pokemon_type.includes(mv.type.name)) {
-                                                stab = 1.2;
-                                            }
                                             let accuracy_wheel = getRandomNumberBetween(1, 100)
                                             let dodged = 1;
                                             if (mv.accuracy <= accuracy_wheel) {
                                                 dodged = 0.25;
                                             }
-                                            let modifier = stab * dodged;
+                                            let type = 1;
+                                            if (data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toLowerCase())).includes(mv.type.name)) {
+                                                type = 1.2;
+                                            }
+                                            let stab = 1;
+                                            if (mv.type.name == data.types[0].type.name) stab = 1.5;
+                                            let critical = 1;
+                                            if (mv.crit_rate == 1) {
+                                                let chance = getRandomNumberBetween(1, 100)
+                                                if (chance <= 50) {
+                                                    critical = 2;
+                                                }
+                                            }
+                                            let modifier = stab * type * dodged * critical;
                                             aidamage = Math.floor(((0.5 * power * (attack / defence) * modifier) / 2) + 1);// calculate the ai's damage;
+                                            if (mv.effect_chance !== null) {
+                                                if (mv.effect_chance >= getRandomNumberBetween(1, 100)) {
+                                                    flavour_text.push(`${client.user.username}'s Pokemon Inflicted **${mv.meta.ailment.name}**`)
+                                                    aidamage += getRandomNumberBetween(1, 20)
+                                                }
+                                            }
                                             hp1 = hp1 - aidamage;
                                             // checking the survival.
                                             await interaction.channel.send({
@@ -291,6 +326,10 @@ module.exports = {
                                                         .setImage(`attachment://battle.png`)
                                                         .setDescription(`**${interaction.user.username}** Choosed To Pass Their Turn And...\nThe Winner is **${client.user.tag}!**`)]
                                                 })
+                                                let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                                if (client_battle) {
+                                                    client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                                }
                                             } else {
                                                 battle_ai();
                                             }
@@ -324,16 +363,35 @@ module.exports = {
                                                     }
                                                     let accuracy_wheel = getRandomNumberBetween(1, 100)
                                                     let dodged = 1;
-                                                    if (mav.accuracy <= accuracy_wheel) {
+                                                    if (mv.accuracy <= accuracy_wheel) {
                                                         dodged = 0.25;
+                                                        flavour_text[1] = `${client.user.username} choosed the move \`${mv.name}\` but it missed!`
                                                     }
-                                                    let modifier = stab * dodged;
+                                                    let type = 1;
+                                                    if (data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toLowerCase())).includes(mv.type.name)) {
+                                                        type = 1.2;
+                                                    }
+                                                    let heal = mv.healing
+                                                    let critical = 1;
+                                                    if (mv.crit_rate == 1) {
+                                                        let chance = getRandomNumberBetween(1, 100)
+                                                        if (chance < 50) {
+                                                            critical = 2;
+                                                        }
+                                                    }
+                                                    let modifier = stab * type * dodged * critical;
                                                     aidamage = Math.floor(((0.5 * power * (attack / defence) * modifier) / 2) + 1);// calculate the ai's damage;
+                                                    if (mv.effect_chance !== null && mv.meta.ailment.name !== "none") {
+                                                        if (mv.effect_chance >= getRandomNumberBetween(1, 100)) {
+                                                            flavour_text.push(`${client.user.username}'s Pokemon Inflicted **${mv.meta.ailment.name}**`)
+                                                            aidamage += getRandomNumberBetween(1, 20)
+                                                        }
+                                                    }
                                                     let _power = mav.power !== null ? mav.power : 0;
                                                     let _attack = _atkTotal;
                                                     if (mav.damage_class == "special") _attack = _spatkTotal;
                                                     let _defence = defTotal;
-                                                    if (mv.damage_class == "special") _defence = spdefTotal;
+                                                    if (mav.damage_class == "special") _defence = spdefTotal;
                                                     let _stab = 1;
                                                     let _pokemon_type = data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toLowerCase()))
                                                     if (_pokemon_type.includes(mav.type.name)) {
@@ -341,13 +399,50 @@ module.exports = {
                                                     }
                                                     let _accuracy_wheel = getRandomNumberBetween(1, 100)
                                                     let _dodged = 1;
-                                                    if (mv.accuracy <= _accuracy_wheel) {
+                                                    if (mav.accuracy <= _accuracy_wheel) {
                                                         _dodged = 0.25;
+                                                        flavour_text[0] = `${interaction.user.username} choosed the move \`${click.customId}\` but it missed!`
                                                     }
-                                                    let _modifier = _stab * _dodged;
+                                                    let _type = 1;
+                                                    if (_data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toLowerCase())).includes(mav.type.name)) {
+                                                        _type = 1.2;
+                                                    }
+                                                    let _critical = 1;
+                                                    if (mav.crit_rate == 1) {
+                                                        let chance = getRandomNumberBetween(1, 100)
+                                                        if (chance <= 7) {
+                                                            _critical = 2;
+                                                        }
+                                                    }
+                                                    let _modifier = _stab * _dodged * _type * _critical;
                                                     damage = Math.floor(((0.5 * _power * (_attack / _defence) * _modifier) / 2) + 1);// calculate the player's damage.
+                                                    if (mav.effect_chance !== null && mav.meta.ailment.name !== "none") {
+                                                        if (mav.effect_chance >= getRandomNumberBetween(1, 100)) {
+                                                            flavour_text.push(`${interaction.user.username}'s Pokemon Inflicted **${mav.meta.ailment.name}**`)
+                                                            damage += getRandomNumberBetween(1, 20) // add the damage.
+                                                        }
+                                                    }
                                                     if (speedTotal <= _speedTotal) { // ai's first move...
-                                                        hp1 = hp1 - aidamage
+                                                        let flinch = getRandomNumberBetween(1, 100)
+                                                        if (mav.flinch_chance !== null || mav.flinch_chance !== 0) {
+                                                            if (mav.flinch_chance >= flinch) {
+                                                                flavour_text.push(`${client.user.username}'s Pokemon Flinched!`)
+                                                            } else {
+                                                                hp1 = hp1 - aidamage
+                                                                let _heal = mv.healing;
+                                                                if (_heal !== null && _heal > 0) {
+                                                                    hp2 = hp2 + _heal;
+                                                                    flavour_text.push(`${client.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                }
+                                                            }
+                                                        } else {
+                                                            hp1 = hp1 - aidamage
+                                                            let _heal = mv.healing;
+                                                            if (_heal !== null && _heal > 0) {
+                                                                hp2 = hp2 + _heal;
+                                                                flavour_text.push(`${client.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                            }
+                                                        }
                                                         if (hp1 < 1) {
                                                             await interaction.channel.send({
                                                                 embeds: [new MessageEmbed()
@@ -369,8 +464,31 @@ module.exports = {
                                                                     .setImage(`attachment://battle.png`)
                                                                     .setDescription(`The Winner is **${client.user.tag}!**`)]
                                                             })
+                                                            let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                                            if (client_battle) {
+                                                                client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                                            }
                                                         } else { // player survived, now it's player's turn
-                                                            hp2 = hp2 - damage;
+                                                            let flinch = getRandomNumberBetween(1, 100)
+                                                            if (mv.flinch_chance !== null || mv.flinch_chance !== 0) {
+                                                                if (mv.flinch_chance >= flinch) {
+                                                                    flavour_text.push(`${interaction.user.username}'s Pokemon Flinched!`)
+                                                                } else {
+                                                                    hp2 = hp2 - damage
+                                                                    let _heal = mav.healing;
+                                                                    if (_heal !== null && _heal > 0) {
+                                                                        hp1 = hp1 + _heal;
+                                                                        flavour_text.push(`${interaction.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                hp2 = hp2 - damage
+                                                                let _heal = mav.healing;
+                                                                if (_heal !== null && _heal > 0) {
+                                                                    hp1 = hp1 + _heal;
+                                                                    flavour_text.push(`${interaction.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                }
+                                                            }
                                                             if (hp2 < 1) {
                                                                 await interaction.channel.send({
                                                                     embeds: [new MessageEmbed()
@@ -392,17 +510,26 @@ module.exports = {
                                                                         .setImage(`attachment://battle.png`)
                                                                         .setDescription(`The Winner is **${interaction.user.tag}!**`)]
                                                                 })
-                                                                let amt = 100
+                                                                let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                                                if (client_battle) {
+                                                                    client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                                                }
+                                                                let amt = 50
                                                                 if (difficulty == "easy") {
-                                                                    amt = 100;
+                                                                    amt = 50;
                                                                 } else if (difficulty == "medium") {
-                                                                    amt = 500;
+                                                                    amt = 100;
                                                                 } else if (difficulty == "hard") {
-                                                                    amt = 800;
+                                                                    amt = 350;
+                                                                    if(user.q4 !== true) {
+                                                                        user.q2 = true;
+                                                                        user.credits += 4000;
+                                                                        await interaction.channel.send(`**${interaction.user.username}** has completed the **__Hard__** difficulty of the **__AI Battle__** and has been rewarded with **4000** credits!`)
+                                                                    }
                                                                 }
                                                                 user.credits += amt;
                                                                 await user.save()
-                                                                await interaction.user.send(`Thank You For Battling With Our AI, You Recieved \`${amt}\` Credits As A Reward For Winning The Battle!\n**Loving This Bot? Consider Refering it to your friends to earn rewards!*`)
+                                                                await interaction.user.send(`Thank You For Battling With Our AI, You Recieved \`${amt}\` Credits As A Reward For Winning The Battle!\n**Loving This Bot? Consider Refering it to your friends to earn rewards!**`)
                                                             } else { // both survived, send info and redo the battle function
                                                                 await interaction.channel.send({
                                                                     embeds: [new MessageEmbed()
@@ -415,7 +542,27 @@ module.exports = {
                                                             }
                                                         }
                                                     } else { // player's first move!
-                                                        hp2 = hp2 - damage;
+                                                        //hp2 = hp2 - damage;
+                                                        let flinch = getRandomNumberBetween(1, 100)
+                                                        if (mv.flinch_chance !== null || mv.flinch_chance !== 0) {
+                                                            if (mv.flinch_chance >= flinch) {
+                                                                flavour_text.push(`${interaction.user.username}'s Pokemon Flinched!`)
+                                                            } else {
+                                                                hp2 = hp2 - damage
+                                                                let _heal = mav.healing;
+                                                                if (_heal !== null && _heal > 0) {
+                                                                    hp1 = hp1 + _heal;
+                                                                    flavour_text.push(`${interaction.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                }
+                                                            }
+                                                        } else {
+                                                            hp2 = hp2 - damage
+                                                            let _heal = mav.healing;
+                                                            if (_heal !== null && _heal > 0) {
+                                                                hp1 = hp1 + _heal;
+                                                                flavour_text.push(`${interaction.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                            }
+                                                        }
                                                         if (hp2 < 1) {
                                                             await interaction.channel.send({
                                                                 embeds: [new MessageEmbed()
@@ -437,19 +584,47 @@ module.exports = {
                                                                     .setImage(`attachment://battle.png`)
                                                                     .setDescription(`The Winner is **${interaction.user.tag}!**`)]
                                                             })
+                                                            let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                                            if (client_battle) {
+                                                                client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                                            }
                                                             let amt = 100
                                                             if (difficulty == "easy") {
-                                                                amt = 100;
+                                                                amt = 50;
                                                             } else if (difficulty == "medium") {
-                                                                amt = 500;
+                                                                amt = 100;
                                                             } else if (difficulty == "hard") {
-                                                                amt = 800;
+                                                                amt = 350;
+                                                                if(user.q4 !== true) {
+                                                                    user.q2 = true;
+                                                                    user.credits += 4000;
+                                                                    await interaction.channel.send(`**${interaction.user.username}** has completed the **__Hard__** difficulty of the **__AI Battle__** and has been rewarded with **4000** credits!`)
+                                                                }
                                                             }
                                                             user.credits += amt;
                                                             await user.save()
-                                                            await interaction.user.send(`Thank You For Battling With Our AI, You Recieved \`${amt}\` Credits As A Reward For Winning The Battle!\n**Loving This Bot? Consider Refering it to your friends to earn rewards!*`)
+                                                            await interaction.user.send(`Thank You For Battling With Our AI, You Recieved \`${amt}\` Credits As A Reward For Winning The Battle!\n**Loving This Bot? Consider Refering it to your friends to earn rewards!**`)
                                                         } else { // if the ai survived...
-                                                            hp1 = hp1 - aidamage;
+                                                            let flinch = getRandomNumberBetween(1, 100)
+                                                            if (mav.flinch_chance !== null || mav.flinch_chance !== 0) {
+                                                                if (mav.flinch_chance >= flinch) {
+                                                                    flavour_text.push(`${client.user.username}'s Pokemon Flinched!`)
+                                                                } else {
+                                                                    hp1 = hp1 - aidamage
+                                                                    let _heal = mv.healing;
+                                                                    if (_heal !== null && _heal > 0) {
+                                                                        hp2 = hp2 + _heal;
+                                                                        flavour_text.push(`${client.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                hp1 = hp1 - aidamage
+                                                                let _heal = mv.healing;
+                                                                if (_heal !== null && _heal > 0) {
+                                                                    hp2 = hp2 + _heal;
+                                                                    flavour_text.push(`${client.user.username}'s Pokemon Healed **${_heal}** HP`)
+                                                                }
+                                                            }
                                                             if (hp1 < 1) {
                                                                 await interaction.channel.send({
                                                                     embeds: [new MessageEmbed()
@@ -471,6 +646,10 @@ module.exports = {
                                                                         .setImage(`attachment://battle.png`)
                                                                         .setDescription(`The Winner is **${client.user.tag}!**`)]
                                                                 })
+                                                                let client_battle = client.battles.find(r => r.id == interaction.user.id && r.type == "ai")
+                                                                if (client_battle) {
+                                                                    client.battles.splice(client.battles.indexOf(client_battle), 1)
+                                                                }
                                                             } else { // if both survived then...
                                                                 await interaction.channel.send({
                                                                     embeds: [new MessageEmbed()
@@ -490,7 +669,7 @@ module.exports = {
                         }
                         battle_ai();
                     })
-            }).catch(e => { return interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!`) })
+            }).catch(e => { interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!\n${e}`); return console.log(String(e.stack)) })
     }
 }
 function getRandomNumberBetween(min, max) {

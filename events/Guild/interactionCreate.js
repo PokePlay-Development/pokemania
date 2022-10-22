@@ -29,6 +29,9 @@ module.exports = async (client, interaction) => {
 	}
 	if (command) {
 		const { support } = require("../../settings.json")
+		if (client.battles.find(r => r.id == interaction.user.id) || client.battles.find(r => r.id2 == interaction.user.id)) {
+			return interaction.reply({ content: `You Are Already In A Battle!`, ephemeral: true })
+		}
 		let _Trade = await Trade.findOne({ id1: interaction.user.id })
 		if (!_Trade) _Trade = await Trade.findOne({ id2: interaction.user.id })
 		if (_Trade) {
@@ -37,13 +40,13 @@ module.exports = async (client, interaction) => {
 			}
 		}
 		if (command.developer && command.admin && command.admin == true && command.developer == true) {
-			let admin = ["1031202011338788926"]
+			let admin = ["1031202011338788926", "689079888896065571","535376623378104320", "143490319520890881", "918735955123388436", "841667029165015081"]
 			if (!admin.includes(interaction.user.id)) {
 				return interaction.reply({ content: `Only **${client.user.username}'s** Admins/Developers Can Run This Command.` })
 			}
 		}
 		if (command.developer && command.developer == true && command.admin && command.admin !== true) {
-			let developers = ["1031202011338788926"]
+			let developers = ["1031202011338788926", "689079888896065571"]
 			if (!developers.includes(interaction.user.id)) {
 				return interaction.reply({ content: `Only **${client.user.username}'s** Developers/Owners Can Run This Command.`, ephemeral: true })
 			}
@@ -226,18 +229,42 @@ module.exports = async (client, interaction) => {
 										if (collect.customId == "send_to_center") {
 											user.pokemons1.push(poke)
 											user.caught.push(poke)
+											user.qcaught.push(poke)
 											await user.save()
+											if(user.qcaught.length >= 10 && user.q1 == false) {
+												user = await User.findOne({ id: interaction.user.id })
+												user.credits = user.credits + 1000
+												user.q1 = true
+												await user.save()
+												await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+											}
 											return collect.reply({ content: `**Successfully** Sent The Pokémon To **Pokémon Center!**` })
 										} else {
 											if (user.pokemons.length >= 6) {
 												user.pokemons1.push(poke)
 												user.caught.push(poke)
+												user.qcaught.push(poke)
 												await user.save()
+												if(user.qcaught.length >= 10 && user.q1 == false) {
+													user = await User.findOne({ id: interaction.user.id })
+													user.credits = user.credits + 1000
+													user.q1 = true
+													await user.save()
+													await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+												}
 												return collect.reply({ content: `Your **Pokémon Slots** Are Currently Full! Sent The Pokémon To Pokémon Center.` })
 											} else {
 												user.pokemons.push(poke)
 												user.caught.push(poke)
+												user.qcaught.push(poke)
 												await user.save()
+												if(user.qcaught.length >= 10 && user.q1 == false) {
+													user = await User.findOne({ id: interaction.user.id })
+													user.credits = user.credits + 1000
+													user.q1 = true
+													await user.save()
+													await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+												}
 												return collect.reply({ content: `**Successfully** Added **${data.name}** To Your Pokémon Slots!` })
 											}
 										}
@@ -280,18 +307,42 @@ module.exports = async (client, interaction) => {
 										if (collect.customId == "send_to_center") {
 											user.pokemons1.push(poke)
 											user.caught.push(poke)
+											user.qcaught.push(poke)
 											await user.save()
+											if(user.qcaught.length >= 10 && user.q1 == false) {
+												user = await User.findOne({ id: interaction.user.id })
+												user.credits = user.credits + 1000
+												user.q1 = true
+												await user.save()
+												await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+											}
 											return collect.reply({ content: `**Successfully** Sent The Pokémon To **Pokémon Center!**` })
 										} else {
 											if (user.pokemons.length >= 6) {
 												user.pokemons1.push(poke)
 												user.caught.push(poke)
+												user.qcaught.push(poke)
 												await user.save()
+												if(user.qcaught.length >= 10 && user.q1 == false) {
+													user = await User.findOne({ id: interaction.user.id })
+													user.credits = user.credits + 1000
+													user.q1 = true
+													await user.save()
+													await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+												}
 												return collect.reply({ content: `Your **Pokémon Slots** Are Currently Full! Sent The Pokémon To Pokémon Center.` })
 											} else {
 												user.pokemons.push(poke)
 												user.caught.push(poke)
+												user.qcaught.push(poke)
 												await user.save()
+												if(user.qcaught.length >= 10 && user.q1 == false) {
+													user = await User.findOne({ id: interaction.user.id })
+													user.credits = user.credits + 1000
+													user.q1 = true
+													await user.save()
+													await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+												}
 												return collect.reply({ content: `**Successfully** Added **${data.name}** To Your Pokémon Slots!` })
 											}
 										}
@@ -300,7 +351,15 @@ module.exports = async (client, interaction) => {
 										if (collected.size <= 0) {
 											user.pokemons1.push(poke)
 											user.caught.push(poke)
+											user.qcaught.push(poke)
 											await user.save()
+											if(user.qcaught.length >= 10 && user.q1 == false) {
+												user = await User.findOne({ id: interaction.user.id })
+												user.credits = user.credits + 1000
+												user.q1 = true
+												await user.save()
+												await interaction.channel.send(`You Have Completed The First Quest **To Catch 10 Pokémons**! You Have Been Rewarded With **1000 Credits**!`)
+											}
 											return interaction.channel.send({ content: `There Was **No Response** From The Trainer,\n**Successfully** Sent The Pokémon To **Pokémon Center!**` })
 										}
 									})
