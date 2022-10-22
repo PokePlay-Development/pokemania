@@ -21,6 +21,8 @@ module.exports = {
             delete user.selected[0].xp;
             delete r.level;
             delete user.selected[0].level;
+	    delete r.moves;
+	    delete[user.selected[0].moves;
             return JSON.stringify(r) === JSON.stringify(user.selected[0])
         })
         let index = user.pokemons.indexOf(poke)
@@ -30,7 +32,7 @@ module.exports = {
 
         let moves = pokemon.moves;
         if(moves.length >= 4) {
-	    await interaction.reply(`Your Pokémon Have Already Learnt 4 Moves!`)
+	    await return interaction.reply(`Your Pokémon Have Already Learnt 4 Moves!`)
         }
         let mvname = interaction.options.getString("move_name").replace(/ /g, "-").toLowerCase();
         fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)

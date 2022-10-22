@@ -3,7 +3,34 @@
     "ntoken": "MTAzMjI5Mzg4ODE0NjI4NDYwNQ.GXmW5w._pbEYAaejuiAC2j7xJ_apDAhQtJ_Cm9B_lC3ro",
     "messageContentCommands": {
         "prefix": "!",
-        "status": false
+        "status": false,
+        "commandsDirs": [
+            {
+                "Folder": "Developer",
+                "CmdName": "developer",
+                "CmdDescription": "Developer Only Commands."
+            },
+            {
+                "Folder": "Settings",
+                "CmdName": "settings",
+                "CmdDescription": "Change Settings For This Server."
+            },
+            {
+                "Folder": "Redirect",
+                "CmdName": "redirect",
+                "CmdDescription": "Manage Spawn Redirections."
+            },
+            {
+                "Folder": "Trade",
+                "CmdName": "trade",
+                "CmdDescription": "trade items with users."
+            },
+            {
+                "Folder": "Duel",
+                "CmdName": "duel",
+                "CmdDescription": "Duel With Users / AI."
+            }
+        ]
     },
     "support": "https://discord.gg/yW96nQZQ9d",
     "loadSlashsGlobal": true,
