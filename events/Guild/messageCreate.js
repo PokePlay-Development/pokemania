@@ -199,7 +199,7 @@ module.exports = async (client, message) => {
                     throw_ball,
                     battle
                 ])]
-                if (spawner.channels && spawner.channels.length < 1) {
+                if (spawner.channels.length < 1) {
                     let spawn = Spawn.findOne({ id: message.channel.id });
                     if (spawn) {
                         Spawn.findOneAndDelete({ id: message.channel.id }, async (err, res) => {
@@ -221,7 +221,7 @@ module.exports = async (client, message) => {
                     }).catch(e => {
                         console.log(`Unable To Spawn Pokemon Here.`)
                     })
-                } else {
+                } else if(spawner.channels.length >= 1) {
                     let cid = spawner.channels[Math.floor(Math.random() * spawner.channels.length)]
                     let channel = message.guild.channels.cache.get(cid)
                     if (channel) {
@@ -235,7 +235,7 @@ module.exports = async (client, message) => {
                         } else {
                             await new Spawn({ id: channel.id, pokeid: data.id, pokename: data.name }).save()
                         }
-                        await message.channel.send({
+                        await channel.send({
                             embeds: [new MessageEmbed()
                                 .setColor(color)
                                 .setTitle(`A Wild Pokémon Has Appeared!`)
