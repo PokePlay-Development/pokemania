@@ -8,7 +8,7 @@ module.exports = {
     name: "cancel",
     description: "Cancel The Current Duel!",
     duel: true,
-    battle: true,
+    battle: true, 
     run: async (client, interaction, color) => {
         let check = client.battles.find(r => r.id == interaction.user.id)
         if(!check && !client.battles.find(r => r.id1 == interaction.user.id)) {
