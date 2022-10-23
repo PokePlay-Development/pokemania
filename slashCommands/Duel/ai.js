@@ -165,6 +165,7 @@ module.exports = {
                         let hp1 = _hpTotal;
                         let hp2 = hpTotal;
                         async function battle_ai() {
+                            if(!client.battles.find(r => r.id == interaction.user.id)) return;
                             let msg = await interaction.channel.send({
                                 embeds: [new MessageEmbed()
                                     .setTitle(`Battle Between ${interaction.user.tag} And ${client.user.tag}`)
@@ -231,7 +232,9 @@ module.exports = {
                                 }
                             })
                             collector.on("collect", async (click) => {
+                                if(!client.battles.find(r => r.id == interaction.user.id)) return;
                                 if (click.customId == "flee") {
+                                    if(!client.battles.find(r => r.id == interaction.user.id)) return;
                                     await click.reply({
                                         ephemeral: true,
                                         embeds: [new MessageEmbed()
@@ -259,6 +262,7 @@ module.exports = {
                                         client.battles.splice(client.battles.indexOf(client_battle), 1)
                                     }
                                 } else if (click.customId == "pass") {
+                                    if(!client.battles.find(r => r.id == interaction.user.id)) return;
                                     fetch(`https://pokeapi.co/api/v2/move/${opponent_moves[Math.floor(Math.random() * opponent_moves.length)]}`)
                                         .then(res => res.json())
                                         .then(async mv => { // m
@@ -599,7 +603,7 @@ module.exports = {
                                                                     user.q2 = true;
                                                                     user.credits += 4000;
                                                                     await interaction.channel.send(`**${interaction.user.username}** has completed the **__Hard__** difficulty of the **__AI Battle__** and has been rewarded with **4000** credits!`)
-                                                                }
+                                                                } // we don't have it lol. you have to make the message command stuff. have fun :) find me in start.js command file.
                                                             }
                                                             user.credits += amt;
                                                             await user.save()
@@ -667,6 +671,7 @@ module.exports = {
                                 }
                             })
                         }
+                        if(!client.battles.find(r => r.id == interaction.user.id)) return;
                         battle_ai();
                     })
             }).catch(e => { interaction.editReply(`An Error Occured While Finding The Pokemon, try back later!\n${e}`); return console.log(String(e.stack)) })

@@ -21,7 +21,7 @@ module.exports = {
         delete r.level;
         delete user.selected[0].level;
 	delete r.moves;
-	delete[user.selected[0].moves;
+	delete user.selected[0].moves;
         return JSON.stringify(r) === JSON.stringify(user.selected[0])
     })
     let index = user.pokemons.indexOf(poke)
