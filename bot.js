@@ -6,7 +6,7 @@ const Cluster = require("discord-hybrid-sharding")
 const fetch = require("node-fetch");
 const client = new Client({
     intents: [Discord.Intents.FLAGS.GUILDS,
-    Discord.Intents.FLAGS.GUILD_MEMBERS,
+    //Discord.Intents.FLAGS.GUILD_MEMBERS,
     //Discord.Intents.FLAGS.GUILD_BANS,
     //Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
     //Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
