@@ -2,14 +2,14 @@ const {
     MessageEmbed,
     MessageButton,
     MessageActionRow
-} = require("discord.js")
-const Trade = require("../../models/trade.js")
-const User = require("../../models/user.js")
+} = require("discord.js");
+const Trade = require("../models/trade");
+const User = require("../models/user");
+const { color } = require("../settings.json").embeds;
 module.exports = {
-    name: "confirm",
-    trade: true,
-    description: "Execute The Trade.",
-    run: async (client, interaction, color) => {
+    run: async (client, interaction) => {
+        let check = await User.findOne({ id: interaction.user.id });
+        if(!check) return interaction.reply({ content: `You Have Not Started Yet, Type \`/start\` To Pick A Starter!`, ephemeral: true });
         let trade = await Trade.findOne({ id1: interaction.user.id });
         let _trade = await Trade.findOne({ id2: interaction.user.id });
         if (!trade && !_trade) return interaction.reply(`You Are Not in A Trade.`)

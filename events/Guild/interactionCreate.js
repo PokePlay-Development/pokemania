@@ -64,7 +64,30 @@ module.exports = async (client, interaction) => {
 		guild = await Guild.findOne({ id: interaction.guild.id })
 		command.run(client, interaction, color, support, guild)
 	}
+/**
+ * @INFO
+ * ADDED BUTTON HANDLING SINCE THIS FILE WAS GETTING TOO BIG lol.
+ * @INFO
+ */
+
 	if (interaction.isButton()) {
+	const button_file = require("node:fs").readdirSync(`${process.cwd()}/buttons/`).filter(file => file.split(".")[0] == interaction.customId);
+	if (button_file.length > 0 && button_file.length < 2) {
+		const button = require(`${process.cwd()}/buttons/${button_file[0]}`);
+		button.run(client, interaction);
+	}
+/**
+ * @INFO
+ * ADDED BUTTON HANDLING SINCE THIS FILE WAS GETTING TOO BIG lol.
+ * @INFO
+ */
+
+
+
+
+
+
+
 		if (interaction.customId == "decline_trade") {
 			let trade = await Trade.findOne({ id1: interaction.user.id })
 			let _trade = await Trade.findOne({ id2: interaction.user.id })
@@ -79,13 +102,10 @@ module.exports = async (client, interaction) => {
 				})
 			}
 		}
-		if (interaction.customId == "confirm_trade") {
-			return interaction.reply({ content: `Under Maintainance, Try Back Later.\nUse \`/trade confirm\` Command instead.`, ephemeral: true })
-		}
 		// spawns buttons
 		if (interaction.customId == "throw_ball") {
 			let spawn = await Spawn.findOne({ id: interaction.channel.id })
-			if (!spawn) return;
+			if (!spawn) return console.log("no spawn.")
 			//console.log(spawn)
 			let user = await User.findOne({ id: interaction.user.id })
 			if (!user) {

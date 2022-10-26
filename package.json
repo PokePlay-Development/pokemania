@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@pokemaniateam/fetch-json": "^1.0.1",
     "canvas": "^2.10.1",
     "class-transformer": "^0.5.1",
     "colors": "^1.4.0",

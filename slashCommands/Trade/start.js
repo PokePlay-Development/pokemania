@@ -81,7 +81,7 @@ module.exports = {
                         new MessageButton()
                         .setStyle("SUCCESS")
                         .setCustomId("confirm_trade")
-                        .setDisabled(true)
+                        //.setDisabled(true)
                         .setLabel("Confirm Trade"),
                         new MessageButton()
                         .setStyle("DANGER")
