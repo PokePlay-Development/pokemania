@@ -69,6 +69,7 @@ client.on("messageCreate", async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
     let guild = await Guild.findOne({ id: message.guild.id });
+    if(!guild) return await new Guild({ id: message.guild.id }).save();
     if (message.content.toLowerCase().startsWith(guild.prefix)) return;
     let spawner = await Spawner.findOne({ id: message.guild.id });
     if (!spawner) await new Spawner({ id: message.guild.id }).save();
