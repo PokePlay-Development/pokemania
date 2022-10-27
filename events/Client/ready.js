@@ -6,6 +6,7 @@ module.exports = async (client) => {
     }).catch(e => {
         console.log(`[DATABASE]`.red, `${e}`.bold.yellow)
     })
+    client.user.setActivity(`/pokemon • pokemania.bot`, {type: 'PLAYING'});
     async function check_time_and_rest_quest() {
         var date = new Date();
         var hour = date.getHours();
