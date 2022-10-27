@@ -7,12 +7,12 @@ module.exports = {
     description: "Get a hint for the pokemon",
     run: async (client, message, args) => {
         if(cooldown.has(message.channel.id)) {
-			return message.react("⏰")
+			return await message.react("⏰")
 		} else {
 			cooldown.add(message.channel.id)
 			setTimeout(function () {
 				cooldown.delete(message.channel.id)
-			}, 5000)
+			}, 7000)
 		}
         let user = await User.findOne({ id: message.author.id });
         if (!user) {
@@ -32,6 +32,6 @@ module.exports = {
         return message.channel.send({ content: `The Wild Pokémon is ${name}`})
     }
 }
-async function getRandomNumberBetween(min, max) {
+function getRandomNumberBetween(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

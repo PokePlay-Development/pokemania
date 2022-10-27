@@ -50,6 +50,12 @@ module.exports = {
 						let gender = genarray[Math.floor(Math.random() * 2)];
 						if (deta.gender_rate < 0) gender = "none";
                         let url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`;
+                        let shiny_chance = getRandomNumberBetween(1, 100);
+                        let shiny = false;
+                        if (shiny_chance <= 5) {
+                            url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${data.id}.png`;
+                            shiny = true;
+                        }
                         let poke = new Pokemon({ gender: gender, name: data.name, url: url, level: getRandomNumberBetween(1, 45), shiny: false, index: user.pokemons.length })
                         poke = instanceToPlain(poke)
                         _collector.on("collect", async (collect) => {
@@ -110,6 +116,6 @@ module.exports = {
         })
     }
 }
-async function getRandomNumberBetween(min, max) {
+function getRandomNumberBetween(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

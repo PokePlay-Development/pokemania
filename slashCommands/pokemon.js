@@ -1,6 +1,7 @@
 const {
     MessageEmbed,
     MessageButton,
+    MessageSelectMenu,
     MessageActionRow
 } = require("discord.js")
 const User = require("../models/user.js")
@@ -49,8 +50,40 @@ module.exports = {
             .setCustomId("fastforward")
             .setEmoji("⏩"),
         ])
+        let nrow = new MessageActionRow()
+        .addComponents([
+            new MessageSelectMenu()
+            .setCustomId("filters")
+            .setPlaceholder("Filter Pokémons")
+            .setMinValues(1)
+            .setMaxValues(4)
+            .addOptions([
+                {
+                    label: "Filter By Shiny",
+                    value: "filter_shiny",
+                    description: "Filter Pokémons By Shiny",
+                    emoji: "✨"
+                },
+                {
+                    label: "Filter By Name",
+                    value: "filter_name",
+                    description: "Filter Pokémons By Name",
+                    emoji: "📝"
+                },
+                {
+                    label: "Sort By Level",
+                    value: "sort_level",
+                    description: "Sort Pokémons By Level",
+                },
+                {
+                    label: "Sort By IV",
+                    value: "sort_iv",
+                    description: "Sort Pokémons By IV",
+                }
+            ])
+        ])
         await interaction.reply({ content: `Success!`, ephemeral: true })
-        let msg = await interaction.followUp({ embeds: [embed], components: [row] })
+        let msg = await interaction.followUp({ embeds: [embed], components: [row, nrow] })
         const filter = i => {
             if(i.user.id == interaction.user.id) return true;
             else return i.reply({ content: `This Button is Not For You!`, ephemeral: true })

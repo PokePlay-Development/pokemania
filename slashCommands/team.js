@@ -35,7 +35,7 @@ module.exports = {
             for(let i = 0;i < 6;i++) {
                 let poke = user.pokemons[i];
                 if(poke) {
-                    embed.addFields({ name: `Slot ${i + 1}`, value: `**${poke.name}, ${poke.totalIV}%**`, inline: true })
+                    embed.addFields({ name: `Slot ${i + 1}`, value: `**${poke.shiny == true ? "✨":""} **__${poke.name}*__*, ${poke.totalIV}%**`, inline: true })
                 } else {
                     embed.addFields({ name: `Slot ${i + 1}`, value: `Empty Slot.`, inline: true })
                 }
@@ -130,9 +130,7 @@ module.exports = {
                         { name: `___Others:___`, value: `**__Held Items:__** **\`${poke.helditem.length > 0 ? `${poke.helditem.join(", ")}` : "\u200B"}\`**\n**__Moves Learnt:__** **\`${poke.moves.length > 0 ? `${poke.moves.join(", ")}*` : "\u200B"}\`**` }
                     )
                     await interaction.editReply({ content: `Success!`})
-                    return await interaction.followUp({ embeds: [embed],
-                    components: [new MessageActionRow()
-                                .addComponents([new MessageButton().setLabel("fetch from center?").setCustomId("fetch").setStyle("SECONDARY")])] })
+                    return await interaction.followUp({ embeds: [embed] })
                 }).catch(async (e) => {
                     let gender = poke.gender;
                     if(gender == "none") {
@@ -179,24 +177,24 @@ module.exports = {
                     let types = new Array();
                     data.types.forEach(type => {
                         let _name = type.type.name;
-                        if(_name == "fire") types.push("<:fire_type:1027123355612090419>")
-                        if(_name == "water") types.push("<:water_type:1027123415326412870>")
-                        if(_name == "normal") types.push("<:normal_type:1027123722454310932>")
-                        if(_name == "grass") types.push("<:grass_type:1027123491406872617>")
-                        if(_name == "ground") types.push("<:ground_type:1027124114126815262>")
-                        if(_name == "flying") types.push("<:flying_type:1027124211459829781>")
-                        if(_name == "electric") types.push("<:electric_type:1027123799373664298>")
-                        if(_name == "poison") types.push("<:poison_type:1027124002919043112>")
-                        if(_name == "ice") types.push("<:ice_type:1027123864326643772>")
-                        if(_name == "fighting") types.push("<:fighting_type:1027123932014329927>")
-                        if(_name == "psychic") types.push("<:psychic_type:1027124282842689537>")
-                        if(_name == "bug") types.push("<:bug_type:1027124337905504267>")
-                        if(_name == "rock") types.push("<:rock_type:1027124413998583900>")
-                        if(_name == "ghost") types.push("<:ghost_type:1027124475642257408>")
-                        if(_name == "dark") types.push("<:dark_type:1027124529698439198>")
-                        if(_name == "dragon") types.push("<:dragon_type:1027124583192592384>")
-                        if(_name == "steel") types.push("<:Steel_type:1027126327683338280>")
-                        if(_name == "fairy") types.push("<:fairy_type:1027124717682970686>")
+                        if(_name == "fire") types.push("<:FireType:1034392968129413160>")
+                        if(_name == "water") types.push("<:water_type:1034393114019889182>")
+                        if(_name == "normal") types.push("<:NormalType:1034393242566922291>")
+                        if(_name == "grass") types.push("<:type_grass:1034393353929904138>")
+                        if(_name == "ground") types.push("<:GroundTypes:1034393456459649084>")
+                        if(_name == "flying") types.push("<:FlyingType:1034393561732481115>")
+                        if(_name == "electric") types.push("<:electric_type:1034393781761486928>")
+                        if(_name == "poison") types.push("<:poison_typeZ:1034393881640443934>")
+                        if(_name == "ice") types.push("<:Type_Ice:1034393987085246495>")
+                        if(_name == "fighting") types.push("<:FightingType:1034394156916809738>")
+                        if(_name == "psychic") types.push("<:Psychic_type:1034394250391064626>")
+                        if(_name == "bug") types.push("<:BugType:1034394550413840425>")
+                        if(_name == "rock") types.push("<:rock_type:1034399528389984256>")
+                        if(_name == "ghost") types.push("<:Ghost_Type:1034402324979920926>")
+                        if(_name == "dark") types.push("<:DarkType:1034399874239696938>")
+                        if(_name == "dragon") types.push("<:DragonType:1034399977075646484>")
+                        if(_name == "steel") types.push("<:steel_type:1034399685722521660>")
+                        if(_name == "fairy") types.push("<:type_fairy:1034402678626861127>")
                     })
                     let embed = new MessageEmbed()
                     .setTitle(`${gender} ${interaction.user.username}'s ___${poke.shiny == true ? "✨" : ""}${data.name}___`)

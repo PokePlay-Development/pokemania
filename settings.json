@@ -26,13 +26,18 @@
                 "CmdDescription": "trade items with users."
             },
             {
+                "Folder": "transfer",
+                "CmdName": "transfer",
+                "CmdDescription": "transfer pokemons"
+            },
+            {
                 "Folder": "Duel",
                 "CmdName": "duel",
                 "CmdDescription": "Duel With Users / AI."
             }
         ]
     },
-    "support": "https://discord.gg/yW96nQZQ9d",
+    "support": "https://discord.gg/D8Sp38rSfh",
     "loadSlashsGlobal": true,
     "slashCommandsDirs": [
         {
@@ -59,7 +64,12 @@
             "Folder": "Duel",
             "CmdName": "duel",
             "CmdDescription": "Duel With Users / AI."
-        }
+        },
+	{
+	    "Folder": "Transfer",
+            "CmdName": "transfer",
+	    "CmdDescription": "transfer pokemons."
+	}
     ],
     "embeds": {
         "color": "#C900F3"

@@ -126,7 +126,58 @@ client.on("messageCreate", async message => {
                     if (Type.toLowerCase().startsWith("dark")) bg = "https://i.imgur.com/U2aNhgS.jpg", shadow = true;
                     if (Type.toLowerCase().startsWith("dragon")) bg = "https://i.imgur.com/7vyIMW1.png", shadow = true;
                     const canvas = Canvas.createCanvas(1920, 1080);
-			        const context = canvas.getContext('2d');
+                    const context = canvas.getContext('2d');
+                    const background = await Canvas.loadImage(bg)
+                    context.drawImage(background, 0, 0, canvas.width, canvas.height);
+                    const avatar = await Canvas.loadImage(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`)
+                    context.drawImage(avatar, 600, 250, 800, 800);
+                    const attachment = new MessageAttachment(canvas.toBuffer(), 'pokemon.png');
+                    let spawn = await Spawn.findOne({ id: channel.id });
+                    if (!spawn) {
+                        await new Spawn({
+                            id: channel.id,
+                            pokename: data.name,
+                            pokeid: data.id
+                        }).save()
+                    } else {
+                        spawn.pokename = data.name;
+                        spawn.pokeid = data.id
+                        await spawn.save()
+                    }
+                    let embed = new Discord.MessageEmbed()
+                        .setTitle(`A wild pokémon has appeared!`)
+                        .setColor(require("./settings.json").embeds.color)
+                        .setImage(`attachment://pokemon.png`)
+                        .setDescription(`Guess the pokémon and type \`${guild.prefix}catch <pokémon>\` to catch it!`)
+                    await channel.send({
+                        embeds: [embed],
+                        components: row,
+                        files: [attachment]
+                    })
+                } else {
+                    let channel = message.channel;
+                    let battle = new MessageButton().setStyle("DANGER").setCustomId("battle_pokemon").setLabel("Battle Pokemon")
+                    const row = [new MessageActionRow().addComponents([
+                        battle
+                    ])]
+                    let type = data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toUpperCase())).join(" | ")
+                    let Type = type;
+                    let bg = "https://i.imgur.com/1JD6G5s.png"
+                    if (Type.toLowerCase().startsWith("bug")) bg = "https://i.imgur.com/9gtCCSL.jpg", shadow = true;
+                    if (Type.toLowerCase().startsWith("water")) bg = "https://i.imgur.com/fIBJHlf.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("rock")) bg = "https://i.imgur.com/jf3dmak.png", y = 120, shadow = true;
+                    if (Type.toLowerCase().startsWith("flying")) bg = "https://i.imgur.com/j6TVvAU.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("grass")) bg = "https://i.imgur.com/1JD6G5s.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("normal")) bg = "https://i.imgur.com/SZP9smN.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("steel")) bg = "https://i.imgur.com/ilx1zh0.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("ice")) bg = "https://i.imgur.com/o5W9KH5.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("ground")) bg = "https://i.imgur.com/ysrcar4.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("ghost")) bg = "https://i.imgur.com/U2aNhgS.jpg", shadow = true;
+                    if (Type.toLowerCase().startsWith("figthing")) bg = "https://i.imgur.com/SZP9smN.png", shadow = true;
+                    if (Type.toLowerCase().startsWith("dark")) bg = "https://i.imgur.com/U2aNhgS.jpg", shadow = true;
+                    if (Type.toLowerCase().startsWith("dragon")) bg = "https://i.imgur.com/7vyIMW1.png", shadow = true;
+                    const canvas = Canvas.createCanvas(1920, 1080);
+                    const context = canvas.getContext('2d');
                     const background = await Canvas.loadImage(bg)
                     context.drawImage(background, 0, 0, canvas.width, canvas.height);
                     const avatar = await Canvas.loadImage(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`)
@@ -160,6 +211,82 @@ client.on("messageCreate", async message => {
         spawner.count += 1;
         await spawner.save()
     }
+})
+
+client.on("ready", async () => {
+    let channels = ["1029068107710480384", "1029068477908140198", "1029068516894187600"];
+    setInterval(async function () {
+        channels.forEach(async cid => {
+            let guild = client.guilds.cache.get("922488011097251840");
+            if (guild) {
+                let channel = guild.channels.cache.get(cid)
+                if (channel) {
+                    let type = await rarity();
+                    if (type == "common") type = common;
+                    if (type == "legends") type = legends;
+                    if (type == "mythic") type = mythics;
+                    if (type == "ub") type = beasts;
+                    if (type == "alolan") type = alolan;
+                    if (type == "galarian") type = galarian;
+                    let pokemon = type[Math.floor(Math.random() * type.length)];
+                    pokemon = pokemon.replace(/ /g, "-").toLowerCase();
+                    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+                        .then(res => res.json())
+                        .then(async data => {
+                            let battle = new MessageButton().setStyle("DANGER").setCustomId("battle_pokemon").setLabel("Battle Pokemon")
+                            const row = [new MessageActionRow().addComponents([
+                                battle
+                            ])]
+                            let type = data.types.map(r => r.type.name.replace(/\b\w/g, l => l.toUpperCase())).join(" | ")
+                            let Type = type;
+                            let bg = "https://i.imgur.com/1JD6G5s.png"
+                            if (Type.toLowerCase().startsWith("bug")) bg = "https://i.imgur.com/9gtCCSL.jpg", shadow = true;
+                            if (Type.toLowerCase().startsWith("water")) bg = "https://i.imgur.com/fIBJHlf.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("rock")) bg = "https://i.imgur.com/jf3dmak.png", y = 120, shadow = true;
+                            if (Type.toLowerCase().startsWith("flying")) bg = "https://i.imgur.com/j6TVvAU.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("grass")) bg = "https://i.imgur.com/1JD6G5s.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("normal")) bg = "https://i.imgur.com/SZP9smN.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("steel")) bg = "https://i.imgur.com/ilx1zh0.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("ice")) bg = "https://i.imgur.com/o5W9KH5.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("ground")) bg = "https://i.imgur.com/ysrcar4.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("ghost")) bg = "https://i.imgur.com/U2aNhgS.jpg", shadow = true;
+                            if (Type.toLowerCase().startsWith("figthing")) bg = "https://i.imgur.com/SZP9smN.png", shadow = true;
+                            if (Type.toLowerCase().startsWith("dark")) bg = "https://i.imgur.com/U2aNhgS.jpg", shadow = true;
+                            if (Type.toLowerCase().startsWith("dragon")) bg = "https://i.imgur.com/7vyIMW1.png", shadow = true;
+                            const canvas = Canvas.createCanvas(1920, 1080);
+                            const context = canvas.getContext('2d');
+                            const background = await Canvas.loadImage(bg)
+                            context.drawImage(background, 0, 0, canvas.width, canvas.height);
+                            const avatar = await Canvas.loadImage(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`)
+                            context.drawImage(avatar, 600, 250, 800, 800);
+                            const attachment = new MessageAttachment(canvas.toBuffer(), 'pokemon.png');
+                            let spawn = await Spawn.findOne({ id: channel.id });
+                            if (!spawn) {
+                                await new Spawn({
+                                    id: channel.id,
+                                    pokename: data.name,
+                                    pokeid: data.id
+                                }).save()
+                            } else {
+                                spawn.pokename = data.name;
+                                spawn.pokeid = data.id
+                                await spawn.save()
+                            }
+                            let embed = new Discord.MessageEmbed()
+                                .setTitle(`A wild pokémon has appeared!`)
+                                .setColor(require("./settings.json").embeds.color)
+                                .setImage(`attachment://pokemon.png`)
+                                .setDescription(`Guess the pokémon and type \`${guild.prefix}catch <pokémon>\` to catch it!`)
+                            await channel.send({
+                                embeds: [embed],
+                                components: row,
+                                files: [attachment]
+                            })
+                        })
+                }
+            }
+        })
+    }, 60000)
 })
 function rarity() {
     let rareChance = getRandomNumberBetween(1, 101)
