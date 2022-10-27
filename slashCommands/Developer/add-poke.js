@@ -39,6 +39,8 @@ module.exports = {
         let spdef = options.getInteger("spdef");
         let speed = options.getInteger("speed");
         let shiny = options.getString("shiny");
+	if(shiny == "yes") shiny = true;
+	if(shiny == "no") shiny = false;
         if(hp > 31 || atk > 31 || def > 31 || spatk > 31 || spdef > 31 || speed > 31) {
             return interaction.reply(`One Of The Stats Is Greater Than 31!`)
         }
@@ -50,6 +52,7 @@ module.exports = {
         .then(res => res.json()).catch(e => { return interaction.reply(`The Pokemon You Mentioned Does Not Exist!`) })
         .then(async json => {
             let url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${json.id}.png`;
+	    if(shiny == true) url = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${json.id}.png`
             let poke = new Pokemon({ name: json.name, level: level, hp: hp, atk: atk, def: def, spatk: spatk, spdef: spdef, speed: speed, shiny: shiny, url: url });
             user.pokemons.push(instanceToPlain(poke))
             user.markModified("pokemons")
