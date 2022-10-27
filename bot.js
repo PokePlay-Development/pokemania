@@ -276,7 +276,7 @@ client.on("ready", async () => {
                                 .setTitle(`A wild pokémon has appeared!`)
                                 .setColor(require("./settings.json").embeds.color)
                                 .setImage(`attachment://pokemon.png`)
-                                .setDescription(`Guess the pokémon and type \`${guild.prefix}catch <pokémon>\` to catch it!`)
+                                .setDescription(`Guess the pokémon and type \`${"p!"}catch <pokémon>\` to catch it!`)
                             await channel.send({
                                 embeds: [embed],
                                 components: row,
