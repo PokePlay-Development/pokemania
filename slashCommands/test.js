@@ -1,5 +1,5 @@
 const { Client, Collection, Intents, MessageButton, MessageActionRow, MessageAttachment, MessageEmbed } = require("discord.js");
-onst { color } = require("../../settings.json").embeds;
+const { color } = require("../../settings.json").embeds;
 const fetch = require("node-fetch");
 const User = require("../../models/user");
 const Spawn = require("../../models/spawn.js");
