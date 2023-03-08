@@ -3,3 +3,6 @@
 
 # PokeMania (Mewcord)
 Pokemon Discord Bot
+
+# Support Server
+https://discord.gg/2FHByeCSq8
